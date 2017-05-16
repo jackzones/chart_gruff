@@ -1,9 +1,21 @@
 require 'gruff'
 require_relative 'csv_reader'
+require 'fileutils'
 
 	reader = CsvReader.new
 	ARGV.each do |csv_file_name|
 		STDERR.puts "Processing #{csv_file_name}" 
+
+##deal with the file
+		File.open('output.txt', 'w') do |out_file|
+		File.foreach(csv_file_name) do |line|
+			line.sub!("used", "memused")
+			out_file.puts line unless line =~ /,,,,|Dstat/
+			end
+		end
+		FileUtils.mv('output.txt', csv_file_name)
+		
+## instance 
 		reader.read_in_csv_data(csv_file_name)	
 	end
 
